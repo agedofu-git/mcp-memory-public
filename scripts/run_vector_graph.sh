@@ -20,8 +20,9 @@ trap stop INT TERM
 
 while :; do
     tailscale_ip=$(tailscale ip -4 2>/dev/null || true)
-    if [ -n "$tailscale_ip" ]; then
-        python3 -B scripts/vector_graph_server.py --host "$tailscale_ip" --port "${VECTOR_GRAPH_PORT:-8765}" &
+    db_container=${VECTOR_GRAPH_CONTAINER:-$(docker compose ps -q db 2>/dev/null || true)}
+    if [ -n "$tailscale_ip" ] && [ -n "$db_container" ]; then
+        python3 -B scripts/vector_graph_server.py --host "$tailscale_ip" --port "${VECTOR_GRAPH_PORT:-8765}" --container "$db_container" &
         child=$!
         wait "$child"
         result=$?

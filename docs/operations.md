@@ -107,11 +107,11 @@ ssh -N -L 18080:127.0.0.1:8080 debian-vm
 Python 3とDockerを使います。マップは記憶本文を含むため、生成したHTMLを公開リポジトリへ追加しません。
 
 ```sh
-python3 scripts/vector_graph.py --output vector-graph.html
-python3 scripts/vector_graph_server.py --host 127.0.0.1 --port 8765
+python3 scripts/vector_graph.py --container "$(docker compose ps -q db)" --output vector-graph.html
+python3 scripts/vector_graph_server.py --container "$(docker compose ps -q db)" --host 127.0.0.1 --port 8765
 ```
 
-Tailscaleを使う場合は、`--host`にそのサーバー自身のTailscale IPv4を指定できます。`run_vector_graph.sh`はスクリプトの場所からソースを解決し、TailscaleのIPを確認して再起動します。
+Tailscaleを使う場合は、`--host`にそのサーバー自身のTailscale IPv4を指定できます。`run_vector_graph.sh`はスクリプトの場所からソースを解決し、そのComposeプロジェクトのDBコンテナとTailscaleのIPを確認して再起動します。別のDBコンテナを使う場合は`VECTOR_GRAPH_CONTAINER`で指定できます。
 
 ```sh
 chmod +x scripts/run_vector_graph.sh

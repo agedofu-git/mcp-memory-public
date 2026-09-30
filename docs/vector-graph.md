@@ -6,7 +6,7 @@ PostgreSQL に保存された記憶の埋め込みベクトルを読み、2次�
 
 ```sh
 cd /チェックアウト先/mcp-memory-public
-python3 scripts/vector_graph.py --output "$HOME/vector-graph.html"
+python3 scripts/vector_graph.py --container "$(docker compose ps -q db)" --output "$HOME/vector-graph.html"
 ```
 
 生成された HTML をローカルのブラウザーで開いてください。記憶を更新した場合は再実行します。現行の記憶だけに絞る場合は `--active-only`、表示件数を変える場合は `--limit 500` を指定できます。初期値は新しい順に 300 件です。
@@ -17,7 +17,7 @@ Androidとサーバーを同じTailscaleネットワークにつなぎます。�
 
 ```sh
 cd /チェックアウト先/mcp-memory-public
-python3 scripts/vector_graph_server.py --host "$(tailscale ip -4)" --port 8765
+python3 scripts/vector_graph_server.py --container "$(docker compose ps -q db)" --host "$(tailscale ip -4)" --port 8765
 ```
 
 Androidのブラウザーで `http://<サーバーのTailscale IP>:8765/` を開きます。ページを開いたままで、新しい記憶や更新を約5秒ごとに取り込みます。検索・表示の切り替え・選択中の記憶は更新後もできるだけ保持します。TailscaleのIP以外やすべてのネットワークインターフェースへのバインドはプログラムが拒否します。
