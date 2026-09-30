@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: long-term-memory
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:memory}
+    username: ${DB_USER:memory}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 5000
+  flyway:
+    placeholders:
+      embeddingDimensions: ${EMBEDDING_DIMENSIONS:768}
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+  tomcat:
+    max-http-form-post-size: 256KB
+logging:
+  structured:
+    format:
+      console: logstash
+memory:
+  max-request-bytes: 262144
+  log-content: ${MEMORY_LOG_CONTENT:false}
+  embedding:
+    base-url: ${EMBEDDING_BASE_URL:http://localhost:8000/v1}
+    api-key: ${EMBEDDING_API_KEY:}
+    model: ${EMBEDDING_MODEL:local-embedding-model}
+    provider: ${EMBEDDING_PROVIDER:local}
+    dimensions: ${EMBEDDING_DIMENSIONS:768}
+    version: ${EMBEDDING_VERSION:1}
+    timeout: ${EMBEDDING_TIMEOUT:30s}
+    send-dimensions: ${EMBEDDING_SEND_DIMENSIONS:false}
+  llm:
+    base-url: ${LLM_BASE_URL:http://localhost:8000/v1}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:local-chat-model}
+    timeout: ${LLM_TIMEOUT:60s}
+    temperature: ${LLM_TEMPERATURE:0.0}
+    max-tokens: ${LLM_MAX_TOKENS:2048}
+    json-mode: ${LLM_JSON_MODE:true}
+  ranking:
+    semantic-weight: 0.45
+    importance-weight: 0.18
+    recency-weight: 0.08
+    access-weight: 0.04
+    confidence-weight: 0.10
+    text-weight: 0.15
+    type-boost: 0.03
+    candidate-pool: 50
+    access-cap: 100
+    recency-half-life-days: 90
+    minimum-score: ${MEMORY_RANKING_MINIMUM_SCORE:0}
+    minimum-semantic-score: ${MEMORY_RANKING_MINIMUM_SEMANTIC_SCORE:0}
+  duplicate:
+    similarity-threshold: 0.92
+    relation-threshold: 0.65
+    candidate-limit: 5
+  extraction:
+    minimum-confidence: 0.70
+    minimum-importance: 0.30
+    max-candidates: 8
+  decay:
+    fact-half-life-days: 730
+    preference-half-life-days: 365
+    episodic-half-life-days: 30
+    project-half-life-days: 90
+    procedural-half-life-days: 365
+  consolidation:
+    batch-size: 30
+    cluster-size: 8
+    similarity-threshold: 0.70
+    cooldown-days: 7
+    archive-after-days: 180
+    archive-threshold: 0.08
+    archive-on-schedule: ${CONSOLIDATION_ARCHIVE_ON_SCHEDULE:true}
+    schedule-enabled: ${CONSOLIDATION_SCHEDULE_ENABLED:false}
+    cron: "${MEMORY_CONSOLIDATION_CRON:0 0 3 * * *}"
